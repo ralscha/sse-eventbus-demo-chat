@@ -1,0 +1,19 @@
+<ion-header no-border>
+  <ion-navbar transparent color="secondary">
+    <ion-title>Signin</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form (ngSubmit)="enterNickname()">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Enter your Nickname</ion-label>
+        <ion-input type="text" [(ngModel)]="nickname" name="nickname" required=""></ion-input>
+      </ion-item>
+      <ion-item>
+        <button ion-button full round color="secondary" type="submit">Enter</button>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>
