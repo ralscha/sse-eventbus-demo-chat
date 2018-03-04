@@ -11,7 +11,7 @@
 
 <ion-content padding>
   <ion-list>
-    <button color="primary" ion-item *ngFor="let room of rooms" (click)="joinRoom(room)">
+    <button color="primary" ion-item *ngFor="let room of chatService.rooms" (click)="joinRoom(room)">
       {{room.name}}
       <ion-icon name="chatboxes" item-end></ion-icon>
     </button>

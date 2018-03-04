@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {Content, NavParams} from 'ionic-angular';
 import {ChatService} from '../../providers/chat-service';
+import {Message} from "../../message";
 
 @Component({
   selector: 'page-home',
@@ -23,27 +24,30 @@ export class HomePage {
     this.roomId = this.navParams.get('roomId');
     this.roomName = this.navParams.get('roomName');
 
-    await this.chatService.joinRoom(this.roomId, this.chatService.user);
-    this.messages = await this.chatService.readMessages(this.roomId);
-
-    this.scrollToBottom();
-
-    this.chatService.subscribe(this.roomId, response => {
-      this.messages.push(JSON.parse(response.data));
+    await this.chatService.joinRoom(this.roomId, response => {
+      this.messages.push(...JSON.parse(response.data));
       this.scrollToBottom();
     });
   }
 
   async ionViewWillLeave() {
-    this.chatService.unsubscribe(this.roomId);
-    await this.chatService.leaveRoom(this.roomId, this.chatService.user);
+    await this.chatService.leaveRoom(this.roomId);
   }
 
   async sendMessage() {
-    await this.chatService.send(this.roomId, {
+    const msg: Message = {
+      type: 'MSG',
+      sendDate: Date.now(),
       user: this.chatService.user,
       message: this.message
-    });
+    };
+    this.messages.push(msg);
+    if (this.messages.length > 100) {
+      this.messages.shift();
+    }
+    this.scrollToBottom();
+
+    await this.chatService.send(this.roomId, msg);
     this.message = '';
   }
 

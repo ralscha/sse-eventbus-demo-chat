@@ -17,6 +17,7 @@ export class SigninPage {
 
   enterNickname() {
     this.chatService.user = this.nickname;
+    this.chatService.start();
     this.navCtrl.setRoot(RoomPage);
   }
 

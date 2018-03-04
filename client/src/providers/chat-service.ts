@@ -8,9 +8,11 @@ export class ChatService {
 
   user: string;
 
+  rooms: Room[] = [];
+
   private eventSource: any;
-  public clientId: string;
-  private subscriptions: { [event: string]: (resp: any) => any } | {} = {};
+  private clientId: string;
+  private roomListener:  (resp: any) => any;
 
   private jsonHeaders = new Headers({'Content-Type': 'application/json'});
 
@@ -20,29 +22,14 @@ export class ChatService {
 
   start() {
     this.stop();
-
-    const eventNames = Object.keys(this.subscriptions);
-    if (eventNames.length > 0) {
-      this.eventSource = new EventSource(`http://localhost:8080/register/${this.clientId}/${eventNames.join(',')}`);
-
-      for (const eventName of eventNames) {
-        this.eventSource.addEventListener(eventName, this.subscriptions[eventName]);
-      }
-
-    }
-  }
-
-  subscribe(eventName: string, listener: (resp: any) => any) {
-    this.subscriptions = {[eventName]: listener}
-    this.start();
-  }
-
-  unsubscribe(eventName: string) {
-    delete this.subscriptions[eventName];
-    this.start();
+    this.eventSource = new EventSource(`http://localhost:8080/register/${this.clientId}`);
+    this.eventSource.addEventListener('rooms', response => {
+      this.rooms.push(...JSON.parse(response.data));
+    });
   }
 
   stop() {
+    this.rooms = [];
     if (this.eventSource) {
       this.eventSource.close();
       this.eventSource = null;
@@ -51,43 +38,39 @@ export class ChatService {
 
   addRoom(name: string): Promise<Response> {
     const room: Room = {id: uuid.v4(), name};
+    this.rooms.push(room);
 
-    return fetch('http://localhost:8080/addRoom', {
+    return fetch(`http://localhost:8080/addRoom/${this.clientId}`, {
       headers: this.jsonHeaders,
       method: 'POST',
       body: JSON.stringify(room)
     });
   }
 
-  async readRooms(): Promise<Room[]> {
-    const response = await fetch('http://localhost:8080/rooms');
-    return response.json();
-  }
-
-  async readMessages(roomId: string): Promise<Message[]> {
-    const response = await fetch(`http://localhost:8080/messages/${roomId}`);
-    return response.json();
-  }
-
   send(roomId: string, message: Message) {
-    return fetch(`http://localhost:8080/send/${roomId}`, {
+    return fetch(`http://localhost:8080/send/${this.clientId}/${roomId}`, {
       headers: this.jsonHeaders,
       method: 'POST',
       body: JSON.stringify(message)
     });
   }
 
-  joinRoom(roomId: string, nickname: string) {
-    return fetch(`http://localhost:8080/join/${roomId}`, {
+  joinRoom(roomId: string, roomListener: (resp: any) => any) {
+    this.roomListener = roomListener;
+    this.eventSource.addEventListener(roomId, this.roomListener);
+
+    return fetch(`http://localhost:8080/join/${this.clientId}/${roomId}`, {
       method: 'POST',
-      body: nickname
+      body: this.user
     });
   }
 
-  leaveRoom(roomId: string, nickname: string) {
-    return fetch(`http://localhost:8080/leave/${roomId}`, {
+  leaveRoom(roomId: string) {
+    this.eventSource.removeEventListener(roomId, this.roomListener);
+
+    return fetch(`http://localhost:8080/leave/${this.clientId}/${roomId}`, {
       method: 'POST',
-      body: nickname
+      body: this.user
     });
   }
 

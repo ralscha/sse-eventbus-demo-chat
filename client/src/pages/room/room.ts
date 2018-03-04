@@ -12,14 +12,8 @@ import {SigninPage} from "../signin/signin";
 })
 export class RoomPage {
 
-  rooms: Room[] = [];
-
   constructor(private readonly navCtrl: NavController,
-              private readonly chatService: ChatService) {
-  }
-
-  ionViewWillEnter() {
-    this.chatService.readRooms().then(rooms => this.rooms = rooms);
+              readonly chatService: ChatService) {
   }
 
   addRoom() {
@@ -34,6 +28,7 @@ export class RoomPage {
   }
 
   exit() {
+    this.chatService.stop();
     this.navCtrl.setRoot(SigninPage);
   }
 }
