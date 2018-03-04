@@ -12,23 +12,37 @@ export class ChatService {
 
   private eventSource: any;
   private clientId: string;
-  private roomListener:  (resp: any) => any;
+  private roomListener: (resp: any) => any;
 
   private jsonHeaders = new Headers({'Content-Type': 'application/json'});
+  private initialized = false;
 
   constructor() {
     this.clientId = uuid.v4();
   }
 
   start() {
-    this.stop();
     this.eventSource = new EventSource(`http://localhost:8080/register/${this.clientId}`);
     this.eventSource.addEventListener('rooms', response => {
       this.rooms.push(...JSON.parse(response.data));
     });
+
+    this.eventSource.onopen = () => {
+      if (!this.initialized) {
+        fetch(`http://localhost:8080/subscribe/${this.clientId}`, {
+          method: 'POST',
+          body: null
+        }).then(() => this.initialized = true);
+      }
+    };
   }
 
-  stop() {
+  async stop() {
+    this.initialized = false;
+    await fetch(`http://localhost:8080/unsubscribe/${this.clientId}`, {
+      method: 'POST',
+      body: null
+    });
     this.rooms = [];
     if (this.eventSource) {
       this.eventSource.close();

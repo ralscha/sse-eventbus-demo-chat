@@ -9,17 +9,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -41,18 +37,20 @@ public class ChatController {
 		this.eventBus = eventBus;
 	}
 
-	@GetMapping("/register/{clientId}")
-	public SseEmitter register(@PathVariable("clientId") String clientId,
-			HttpServletResponse response) {
-		response.setHeader("Cache-Control", "no-store");
-		SseEmitter emitter = this.eventBus.createSseEmitter(clientId, 180_000L, "rooms");
-
+	@PostMapping("/subscribe/{clientId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void subscribe(@PathVariable("clientId") String clientId) {
+		this.eventBus.subscribe(clientId, "rooms");
 		this.eventBus.handleEvent(SseEvent.builder().event("rooms").data(this.rooms)
 				.addClientId(clientId).build());
-
-		return emitter;
 	}
 
+	@PostMapping("/unsubscribe/{clientId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void unsubscribe(@PathVariable("clientId") String clientId) {
+		this.eventBus.unregisterClient(clientId);
+	}
+	
 	private List<Message> getMessages(String roomId) {
 		Cache<Message, Boolean> cache = this.roomMessages.get(roomId);
 		if (cache != null) {
