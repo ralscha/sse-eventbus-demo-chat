@@ -14,14 +14,14 @@
         <span class="chat-content-center">{{msg.message}}</span>
       </div>
       <ng-template #message>
-        <div class="chat-message" text-right *ngIf="msg.user === chatService.user">
+        <div class="chat-message" text-right *ngIf="msg.user === chatService.username">
           <div class="right-bubble">
             <span class="msg-name">Me</span>
             <span class="msg-date">{{msg.sendDate | date:'short'}}</span>
             <p text-wrap>{{msg.message}}</p>
           </div>
         </div>
-        <div class="chat-message" text-left *ngIf="msg.user !== chatService.user">
+        <div class="chat-message" text-left *ngIf="msg.user !== chatService.username">
           <div class="left-bubble">
             <span class="msg-name">{{msg.user}}</span>
             <span class="msg-date">{{msg.sendDate | date:'short'}}</span>

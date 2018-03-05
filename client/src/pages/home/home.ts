@@ -12,7 +12,7 @@ export class HomePage {
   @ViewChild(Content) content: Content;
 
   message: string;
-  messages = [];
+  messages:Message[] = [];
   roomId: string;
   roomName: string;
 
@@ -20,34 +20,25 @@ export class HomePage {
               readonly chatService: ChatService) {
   }
 
-  async ionViewWillEnter() {
+  ionViewWillEnter() {
     this.roomId = this.navParams.get('roomId');
     this.roomName = this.navParams.get('roomName');
 
-    await this.chatService.joinRoom(this.roomId, response => {
+    this.chatService.joinRoom(this.roomId, response => {
       this.messages.push(...JSON.parse(response.data));
+      if (this.messages.length > 100) {
+        this.messages.shift();
+      }
       this.scrollToBottom();
     });
   }
 
-  async ionViewWillLeave() {
-    await this.chatService.leaveRoom(this.roomId);
+  ionViewWillLeave() {
+    this.chatService.leaveRoom(this.roomId);
   }
 
-  async sendMessage() {
-    const msg: Message = {
-      type: 'MSG',
-      sendDate: Date.now(),
-      user: this.chatService.user,
-      message: this.message
-    };
-    this.messages.push(msg);
-    if (this.messages.length > 100) {
-      this.messages.shift();
-    }
-    this.scrollToBottom();
-
-    await this.chatService.send(this.roomId, msg);
+  sendMessage() {
+    this.chatService.send(this.roomId, this.message);
     this.message = '';
   }
 

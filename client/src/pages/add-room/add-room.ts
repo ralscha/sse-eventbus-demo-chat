@@ -15,8 +15,15 @@ export class AddRoomPage {
   }
 
   async addRoom() {
-    await this.chatService.addRoom(this.roomname);
-    this.navCtrl.pop();
+    const response = await this.chatService.addRoom(this.roomname);
+    const flag = await response.json();
+    console.log(flag);
+    if (flag) {
+      this.navCtrl.pop();
+    }
+    else {
+      //TODO: show error messgage. room with that name already exists
+    }
   }
 
 }

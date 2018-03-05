@@ -1,10 +1,10 @@
-import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
 import {AddRoomPage} from '../add-room/add-room';
 import {HomePage} from '../home/home';
 import {Room} from "../../room";
 import {ChatService} from "../../providers/chat-service";
 import {SigninPage} from "../signin/signin";
+import {Component} from "@angular/core";
+import {NavController} from "ionic-angular";
 
 @Component({
   selector: 'page-room',
@@ -28,7 +28,7 @@ export class RoomPage {
   }
 
   exit() {
-    this.chatService.stop();
+    this.chatService.signout();
     this.navCtrl.setRoot(SigninPage);
   }
 }

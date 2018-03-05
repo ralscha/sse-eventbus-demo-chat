@@ -1,71 +1,98 @@
-import uuid from 'uuid';
 import {Room} from "../room";
-import {Message} from "../message";
+import {ENV} from '@app/env';
+import {Injectable, NgZone} from "@angular/core";
 
 declare var EventSource: any;
 
+@Injectable()
 export class ChatService {
 
-  user: string;
-
-  rooms: Room[] = [];
+  rooms: Room[];
+  username: string;
 
   private eventSource: any;
   private clientId: string;
   private roomListener: (resp: any) => any;
 
   private jsonHeaders = new Headers({'Content-Type': 'application/json'});
-  private initialized = false;
 
-  constructor() {
-    this.clientId = uuid.v4();
+  constructor(private readonly ngZone: NgZone) {
   }
 
-  start() {
-    this.eventSource = new EventSource(`http://localhost:8080/register/${this.clientId}`);
-    this.eventSource.addEventListener('rooms', response => {
-      this.rooms.push(...JSON.parse(response.data));
+  async signin(username: string): Promise<boolean> {
+    this.clientId = null;
+    this.rooms = null;
+    this.username = null;
+
+    const response = await fetch(`${ENV.SERVER_URL}/signin`, {
+      method: 'POST',
+      body: username
+    });
+    const cid = await response.text();
+
+    if (!cid) {
+      return false;
+    }
+
+    this.username = username;
+
+    this.clientId = cid;
+    this.eventSource = new EventSource(`${ENV.SERVER_URL}/register/${this.clientId}`);
+    this.eventSource.addEventListener('roomAdded', response => {
+      const newRoom = JSON.parse(response.data);
+      this.ngZone.run(() => this.rooms.push(newRoom));
+    });
+    this.eventSource.addEventListener('roomsRemoved', response => {
+      const roomIds = JSON.parse(response.data);
+      this.ngZone.run(() => this.rooms = this.rooms.filter(room => roomIds.indexOf(room.id) === -1));
     });
 
-    this.eventSource.onopen = () => {
-      if (!this.initialized) {
-        fetch(`http://localhost:8080/subscribe/${this.clientId}`, {
+    this.eventSource.onopen = async () => {
+      if (!this.rooms) {
+        const resp = await fetch(`${ENV.SERVER_URL}/subscribe`, {
           method: 'POST',
-          body: null
-        }).then(() => this.initialized = true);
+          body: this.clientId
+        });
+        this.ngZone.run(async () => this.rooms = await resp.json());
       }
     };
+
+    return true;
   }
 
-  async stop() {
-    this.initialized = false;
-    await fetch(`http://localhost:8080/unsubscribe/${this.clientId}`, {
+  async signout() {
+    await fetch(`${ENV.SERVER_URL}/signout`, {
       method: 'POST',
-      body: null
+      body: this.clientId
     });
-    this.rooms = [];
+
+    this.clientId = null;
+    this.rooms = null;
+    this.username = null;
+
     if (this.eventSource) {
       this.eventSource.close();
       this.eventSource = null;
     }
   }
 
-  addRoom(name: string): Promise<Response> {
-    const room: Room = {id: uuid.v4(), name};
-    this.rooms.push(room);
-
-    return fetch(`http://localhost:8080/addRoom/${this.clientId}`, {
+  addRoom(roomName: string): Promise<Response> {
+    return fetch(`${ENV.SERVER_URL}/addRoom`, {
       headers: this.jsonHeaders,
       method: 'POST',
-      body: JSON.stringify(room)
+      body: roomName
     });
   }
 
-  send(roomId: string, message: Message) {
-    return fetch(`http://localhost:8080/send/${this.clientId}/${roomId}`, {
+  send(roomId: string, message: string) {
+    return fetch(`${ENV.SERVER_URL}/send`, {
       headers: this.jsonHeaders,
       method: 'POST',
-      body: JSON.stringify(message)
+      body: JSON.stringify({
+        clientId: this.clientId,
+        message,
+        roomId
+      })
     });
   }
 
@@ -73,18 +100,26 @@ export class ChatService {
     this.roomListener = roomListener;
     this.eventSource.addEventListener(roomId, this.roomListener);
 
-    return fetch(`http://localhost:8080/join/${this.clientId}/${roomId}`, {
+    return fetch(`${ENV.SERVER_URL}/join`, {
       method: 'POST',
-      body: this.user
+      headers: this.jsonHeaders,
+      body: JSON.stringify({
+        clientId: this.clientId,
+        roomId
+      })
     });
   }
 
   leaveRoom(roomId: string) {
     this.eventSource.removeEventListener(roomId, this.roomListener);
 
-    return fetch(`http://localhost:8080/leave/${this.clientId}/${roomId}`, {
+    return fetch(`${ENV.SERVER_URL}/leave`, {
       method: 'POST',
-      body: this.user
+      headers: this.jsonHeaders,
+      body: JSON.stringify({
+        clientId: this.clientId,
+        roomId
+      })
     });
   }
 

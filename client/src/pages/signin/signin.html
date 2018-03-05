@@ -5,11 +5,11 @@
 </ion-header>
 
 <ion-content padding>
-  <form (ngSubmit)="enterNickname()">
+  <form (ngSubmit)="enterUsername()">
     <ion-list>
       <ion-item>
         <ion-label floating>Enter your Nickname</ion-label>
-        <ion-input type="text" [(ngModel)]="nickname" name="nickname" required=""></ion-input>
+        <ion-input type="text" [(ngModel)]="username" name="username" required=""></ion-input>
       </ion-item>
       <ion-item>
         <button ion-button full round color="secondary" type="submit">Enter</button>

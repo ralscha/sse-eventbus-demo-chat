@@ -13,12 +13,16 @@ export class SigninPage {
               private readonly chatService: ChatService) {
   }
 
-  nickname: string;
+  username: string;
 
-  enterNickname() {
-    this.chatService.user = this.nickname;
-    this.chatService.start();
-    this.navCtrl.setRoot(RoomPage);
+  async enterUsername() {
+    const ok = await this.chatService.signin(this.username);
+    if (ok) {
+      this.navCtrl.setRoot(RoomPage);
+    }
+    else {
+      //TODO: show error message, username already in use
+    }
   }
 
 }

@@ -2,7 +2,7 @@ A demo chat application that demonstrates the usage of
 the [sse-eventbus](https://github.com/ralscha/sse-eventbus) library.
 
 
-#### Start the application
+#### Start the application locally
 
 ```
 git clone https://github.com/ralscha/sse-eventbus-demo-chat.git
