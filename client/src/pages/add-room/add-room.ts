@@ -18,7 +18,6 @@ export class AddRoomPage {
   async addRoom() {
     const response = await this.chatService.addRoom(this.roomname);
     const flag = await response.json();
-    console.log(flag);
     if (flag) {
       this.navCtrl.pop();
     }
