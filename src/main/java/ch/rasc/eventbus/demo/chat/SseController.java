@@ -24,6 +24,7 @@ public class SseController {
 	public SseEmitter register(@PathVariable("clientId") String clientId,
 			HttpServletResponse response) {
 		response.setHeader("Cache-Control", "no-store");
+		response.setHeader("X-Accel-Buffering", "no");
 		return this.eventBus.createSseEmitter(clientId, 180_000L);
 	}
 
