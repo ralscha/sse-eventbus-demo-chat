@@ -1,6 +1,9 @@
 A demo chat application that demonstrates the usage of 
 the [sse-eventbus](https://github.com/ralscha/sse-eventbus) library.
 
+GUI is a clone of this project:    
+https://github.com/didinj/ionic3-angular5-firebase-simple-chat
+
 
 #### Start the application locally
 
