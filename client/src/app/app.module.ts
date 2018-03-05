@@ -7,6 +7,8 @@ import {AddRoomPage} from "../pages/add-room/add-room";
 import {SigninPage} from "../pages/signin/signin";
 import {RoomPage} from "../pages/room/room";
 import {ChatService} from '../providers/chat-service';
+import {EmojiPickerComponent} from "../components/emoji-picker/emoji-picker";
+import {RelativeTime} from "../pipes/realative-time";
 
 @NgModule({
   declarations: [
@@ -14,7 +16,9 @@ import {ChatService} from '../providers/chat-service';
     HomePage,
     AddRoomPage,
     RoomPage,
-    SigninPage
+    SigninPage,
+    EmojiPickerComponent,
+    RelativeTime
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {Content, NavParams} from 'ionic-angular';
+import {Content, NavParams, TextInput} from 'ionic-angular';
 import {ChatService} from '../../providers/chat-service';
 import {Message} from "../../message";
 
@@ -15,6 +15,9 @@ export class HomePage {
   messages:Message[] = [];
   roomId: string;
   roomName: string;
+  showEmojiPicker = false;
+
+  @ViewChild('messageInput') messageInput: TextInput;
 
   constructor(private readonly navParams: NavParams,
               readonly chatService: ChatService) {
@@ -40,6 +43,21 @@ export class HomePage {
   sendMessage() {
     this.chatService.send(this.roomId, this.message);
     this.message = '';
+  }
+
+  onFocus() {
+    this.showEmojiPicker = false;
+    this.content.resize();
+    this.scrollToBottom();
+  }
+
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+    if (!this.showEmojiPicker) {
+      this.messageInput.setFocus();
+    }
+    this.content.resize();
+    this.scrollToBottom();
   }
 
   scrollToBottom() {
