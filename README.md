@@ -4,6 +4,10 @@ the [sse-eventbus](https://github.com/ralscha/sse-eventbus) library.
 GUI is a clone of this project:    
 https://github.com/didinj/ionic3-angular5-firebase-simple-chat
 
+Emojitracker and RelativePipe are copied from this project:     
+https://github.com/HsuanXyz/ionic3-chat
+
+
 ### Online
 
 You can play with the application here: https://tahc.hplar.ch
