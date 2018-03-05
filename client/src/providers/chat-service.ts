@@ -47,15 +47,11 @@ export class ChatService {
       this.ngZone.run(() => this.rooms = this.rooms.filter(room => roomIds.indexOf(room.id) === -1));
     });
 
-    this.eventSource.onopen = async () => {
-      if (!this.rooms) {
-        const resp = await fetch(`${ENV.SERVER_URL}/subscribe`, {
-          method: 'POST',
-          body: this.clientId
-        });
-        this.ngZone.run(async () => this.rooms = await resp.json());
-      }
-    };
+    const resp = await fetch(`${ENV.SERVER_URL}/subscribe`, {
+      method: 'POST',
+      body: this.clientId
+    });
+    this.ngZone.run(async () => this.rooms = await resp.json());
 
     return true;
   }
