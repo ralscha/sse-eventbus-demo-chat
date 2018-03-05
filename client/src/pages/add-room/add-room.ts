@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {AlertController, NavController} from 'ionic-angular';
 import {ChatService} from "../../providers/chat-service";
 
 @Component({
@@ -11,7 +11,8 @@ export class AddRoomPage {
   roomname: string;
 
   constructor(private readonly navCtrl: NavController,
-              private readonly chatService: ChatService) {
+              private readonly chatService: ChatService,
+              private readonly alertCtrl: AlertController) {
   }
 
   async addRoom() {
@@ -22,7 +23,15 @@ export class AddRoomPage {
       this.navCtrl.pop();
     }
     else {
-      //TODO: show error messgage. room with that name already exists
+      const alert = this.alertCtrl.create({
+        title: 'Error',
+        subTitle: 'Room already exists',
+        buttons: [{
+          text: 'OK',
+          role: 'cancel'
+        }]
+      });
+      alert.present();
     }
   }
 

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {AlertController, NavController} from 'ionic-angular';
 import {RoomPage} from '../room/room';
 import {ChatService} from "../../providers/chat-service";
 
@@ -10,7 +10,8 @@ import {ChatService} from "../../providers/chat-service";
 export class SigninPage {
 
   constructor(private readonly navCtrl: NavController,
-              private readonly chatService: ChatService) {
+              private readonly chatService: ChatService,
+              private readonly alertCtrl: AlertController) {
   }
 
   username: string;
@@ -21,7 +22,15 @@ export class SigninPage {
       this.navCtrl.setRoot(RoomPage);
     }
     else {
-      //TODO: show error message, username already in use
+      const alert = this.alertCtrl.create({
+        title: 'Error',
+        subTitle: 'Username already exists',
+        buttons: [{
+          text: 'OK',
+          role: 'cancel'
+        }]
+      });
+      alert.present();
     }
   }
 
