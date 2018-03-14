@@ -1,5 +1,5 @@
-import {Component, ViewChild} from '@angular/core';
-import {Content, NavParams, TextInput} from 'ionic-angular';
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Content, List, NavParams, TextInput} from 'ionic-angular';
 import {ChatService} from '../../providers/chat-service';
 import {Message} from "../../message";
 
@@ -12,12 +12,16 @@ export class HomePage {
   @ViewChild(Content) content: Content;
 
   message: string;
-  messages:Message[] = [];
+  messages: Message[] = [];
   roomId: string;
   roomName: string;
   showEmojiPicker = false;
 
   @ViewChild('messageInput') messageInput: TextInput;
+
+  @ViewChild(List, {read: ElementRef})
+  private chatElement: ElementRef;
+  private mutationObserver: MutationObserver;
 
   constructor(private readonly navParams: NavParams,
               readonly chatService: ChatService) {
@@ -32,17 +36,28 @@ export class HomePage {
       if (this.messages.length > 100) {
         this.messages.shift();
       }
-      this.scrollToBottom();
     });
+
+    this.mutationObserver = new MutationObserver(mutations => {
+      this.content.scrollToBottom();
+    });
+
+    this.mutationObserver.observe(this.chatElement.nativeElement, {
+      childList: true
+    });
+
   }
 
   ionViewWillLeave() {
+    this.mutationObserver.disconnect();
     this.chatService.leaveRoom(this.roomId);
   }
 
   sendMessage() {
-    this.chatService.send(this.roomId, this.message);
-    this.message = '';
+    if (this.message && this.message.trim()) {
+      this.chatService.send(this.roomId, this.message);
+      this.message = '';
+    }
   }
 
   onFocus() {

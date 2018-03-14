@@ -4,12 +4,12 @@ page-home {
   $toUserBackgroundColor: #fff;
 
   ion-content {
-    background: -moz-linear-gradient(142deg, rgba(153,153,153,1) 0%, rgba(41,41,41,1) 100%);
-    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, rgba(41,41,41,1)), color-stop(100%, rgba(153,153,153,1)));
-    background: -webkit-linear-gradient(142deg, rgba(153,153,153,1) 0%, rgba(41,41,41,1) 100%);
-    background: -o-linear-gradient(142deg, rgba(153,153,153,1) 0%, rgba(41,41,41,1) 100%);
-    background: -ms-linear-gradient(142deg, rgba(153,153,153,1) 0%, rgba(41,41,41,1) 100%);
-    background: linear-gradient(308deg, rgba(153,153,153,1) 0%, rgba(41,41,41,1) 100%);
+    background: -moz-linear-gradient(142deg, rgba(153, 153, 153, 1) 0%, rgba(41, 41, 41, 1) 100%);
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, rgba(41, 41, 41, 1)), color-stop(100%, rgba(153, 153, 153, 1)));
+    background: -webkit-linear-gradient(142deg, rgba(153, 153, 153, 1) 0%, rgba(41, 41, 41, 1) 100%);
+    background: -o-linear-gradient(142deg, rgba(153, 153, 153, 1) 0%, rgba(41, 41, 41, 1) 100%);
+    background: -ms-linear-gradient(142deg, rgba(153, 153, 153, 1) 0%, rgba(41, 41, 41, 1) 100%);
+    background: linear-gradient(308deg, rgba(153, 153, 153, 1) 0%, rgba(41, 41, 41, 1) 100%);
     background-size: cover;
     height: 100%;
     overflow: hidden;
@@ -48,7 +48,6 @@ page-home {
       right: 10%;
     }
   }
-
 
   .message-wrap {
     padding: 0 10px;
@@ -124,6 +123,7 @@ page-home {
         }
         p.line-breaker {
           color: black !important;
+          white-space: pre-line;
         }
       }
 
@@ -156,11 +156,33 @@ page-home {
 
         p.line-breaker {
           color: black !important;
+          white-space: pre-line;
         }
       }
 
     }
 
+  }
+
+  .input-wrap {
+    padding: 0 5px;
+    ion-textarea {
+      position: static;
+
+    }
+    ion-col.col {
+      padding: 0;
+    }
+    button {
+      width: 100%;
+      height: 55px;
+      font-size: 1.3em;
+      margin: 0;
+    }
+    textarea {
+      border-bottom: 1px $userBackgroundColor;
+      border-style: solid;
+    }
   }
 
 }
