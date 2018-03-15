@@ -1,3 +1,4 @@
 /.sourcemaps/
 /node_modules/
 /www/
+/build-manifest.json

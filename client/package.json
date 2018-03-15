@@ -10,7 +10,7 @@
     "lint": "ionic-app-scripts lint",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
-    "dist": "shx rm -rf www && npm run build --prod && node ./cache-busting.js && npm run minify-html && npm run compress",
+    "dist": "shx rm -rf www/* && npm run build --prod && node ./cache-busting.js && npm run minify-html && npm run compress",
     "compress": "bread-compressor -a gzip www",
     "minify-html": "html-minifier -o www/index.html www/index.html --collapse-whitespace --remove-comments",
     "open": "http-server www -o -a localhost -p 1234"
