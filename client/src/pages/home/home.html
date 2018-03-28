@@ -38,24 +38,15 @@
 </ion-content>
 
 <ion-footer [style.height]="showEmojiPicker ? '255px' : '55px'">
-  <ion-grid class="input-wrap">
-    <ion-row>
-      <ion-col col-2>
-        <button ion-button clear icon-only item-right (click)="toggleEmojiPicker()">
-          <ion-icon name="happy"></ion-icon>
-        </button>
-      </ion-col>
-      <ion-col col-8>
-        <ion-textarea #messageInput type="text" placeholder="Type a message" [(ngModel)]="message" name="message"
-                   (keyup.enter)="sendMessage()" (ionFocus)="onFocus()"></ion-textarea>
-      </ion-col>
-      <ion-col col-2>
-        <button ion-button clear icon-only item-right (click)="sendMessage()">
-          <ion-icon name="send"></ion-icon>
-        </button>
-      </ion-col>
-
-    </ion-row>
-  </ion-grid>
-  <emoji-picker *ngIf="showEmojiPicker" [(ngModel)]="message"></emoji-picker>
+  <div class="input-wrap">
+    <button ion-button clear icon-only item-right (click)="toggleEmojiPicker()">
+      <ion-icon name="happy"></ion-icon>
+    </button>
+    <ion-textarea #messageInput type="text" placeholder="Type a message" [(ngModel)]="message" name="message"
+                  (keyup.enter)="sendMessage()" (focusin)="onFocus()"></ion-textarea>
+    <button ion-button clear icon-only item-right (click)="sendMessage()">
+      <ion-icon name="send"></ion-icon>
+    </button>
+  </div>
+  <emoji-picker [(ngModel)]="message"></emoji-picker>
 </ion-footer>
