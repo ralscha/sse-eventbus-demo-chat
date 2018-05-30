@@ -30,8 +30,8 @@
     "event-source-polyfill": "0.0.12",
     "ionic-angular": "3.9.2",
     "ionicons": "4.1.1",
-    "rxjs": "6.1.0",
-    "rxjs-compat": "6.1.0",
+    "rxjs": "6.2.0",
+    "rxjs-compat": "6.2.0",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.26"
   },
