@@ -29,7 +29,7 @@
     "date-fns": "1.29.0",
     "event-source-polyfill": "0.0.12",
     "ionic-angular": "3.9.2",
-    "ionicons": "4.2.0",
+    "ionicons": "4.2.1",
     "rxjs": "6.2.1",
     "rxjs-compat": "6.2.1",
     "sw-toolbox": "3.6.0",
