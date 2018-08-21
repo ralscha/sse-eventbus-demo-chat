@@ -56,6 +56,25 @@ public class ChatController {
 		this.users.put(clientId, nickname);
 		return clientId;
 	}
+	
+	@PostMapping("/signinExisting")
+	public String signinExisting(@RequestBody String nickname) {
+		
+		String clientId = null;
+		for (Map.Entry<String,String> entry : this.users.entrySet()) {
+			if (entry.getValue().equals(nickname)) {
+				clientId = entry.getKey();
+				break;
+			}
+		}
+		
+		if (clientId == null) {
+			clientId = String.valueOf(this.clientIdGenerator.incrementAndGet());
+			this.users.put(clientId, nickname);
+		}
+
+		return clientId;
+	}	
 
 	@PostMapping("/signout")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
