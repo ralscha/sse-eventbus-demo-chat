@@ -2,7 +2,6 @@ import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {ChatService} from './chat.service';
-import {flatMap, map, tap} from 'rxjs/operators';
 import {NavController} from '@ionic/angular';
 
 @Injectable({

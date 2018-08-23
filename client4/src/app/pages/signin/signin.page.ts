@@ -21,7 +21,9 @@ export class SigninPage implements OnInit {
     if (username !== null) {
       const ok = await this.chatService.signin(username, true);
       if (ok) {
-        this.navCtrl.goForward('room');
+        this.navCtrl.goRoot('room');
+      } else {
+        sessionStorage.removeItem('username');
       }
     }
   }
@@ -30,7 +32,8 @@ export class SigninPage implements OnInit {
     const ok = await this.chatService.signin(this.username);
     if (ok) {
       sessionStorage.setItem('username', this.username);
-      this.navCtrl.goForward('room');
+      this.username = '';
+      this.navCtrl.goRoot('room');
     } else {
       const alert = await this.alertCtrl.create({
         header: 'Error',

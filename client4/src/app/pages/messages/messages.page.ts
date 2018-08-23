@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild, OnDestroy, OnInit} from '@angular/core';
 import {Content, List, NavController} from '@ionic/angular';
 import {ChatService} from '../../services/chat.service';
 import {Message} from '../../models/message';
@@ -9,7 +9,7 @@ import {ActivatedRoute} from '@angular/router';
   templateUrl: 'messages.page.html',
   styleUrls: ['messages.page.scss'],
 })
-export class MessagesPage {
+export class MessagesPage implements OnInit, OnDestroy {
 
   @ViewChild(Content) content: Content;
 
@@ -37,7 +37,7 @@ export class MessagesPage {
   }
 
 
-  ionViewWillEnter() {
+  ngOnInit() {
     this.roomId = this.route.snapshot.paramMap.get('id');
     const room = this.chatService.findRoom(this.roomId);
     if (room) {
@@ -63,7 +63,7 @@ export class MessagesPage {
 
   }
 
-  ionViewWillLeave() {
+  ngOnDestroy() {
     this.mutationObserver.disconnect();
     this.chatService.leaveRoom(this.roomId);
   }
