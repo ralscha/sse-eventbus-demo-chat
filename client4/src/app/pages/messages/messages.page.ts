@@ -33,7 +33,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   async exit() {
     sessionStorage.removeItem('username');
     await this.chatService.signout();
-    this.navCtrl.goRoot('/signin');
+    this.navCtrl.navigateRoot('/signin');
   }
 
 
@@ -54,13 +54,14 @@ export class MessagesPage implements OnInit, OnDestroy {
     });
 
     this.mutationObserver = new MutationObserver(mutations => {
+      setTimeout(() => {
       this.content.scrollToBottom();
+      }, 100);
     });
 
     this.mutationObserver.observe(this.chatElement.nativeElement, {
       childList: true
     });
-
   }
 
   ngOnDestroy() {

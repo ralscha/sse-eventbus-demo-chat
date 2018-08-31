@@ -20,7 +20,7 @@ export class AddRoomPage {
     const response = await this.chatService.addRoom(this.roomname);
     const flag = await response.json();
     if (flag) {
-      this.navCtrl.goBack('room');
+      this.navCtrl.navigateBack('room');
     } else {
       const alert = await this.alertCtrl.create({
         header: 'Error',

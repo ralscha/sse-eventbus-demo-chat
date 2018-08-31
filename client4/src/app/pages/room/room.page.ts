@@ -15,17 +15,17 @@ export class RoomPage {
   }
 
   addRoom() {
-    this.navCtrl.goForward('/add-room', true, {skipLocationChange: true});
+    this.navCtrl.navigateForward('/add-room', true, {skipLocationChange: true});
   }
 
   joinRoom(room: Room) {
-    this.navCtrl.goForward(`/messages/${room.id}`);
+    this.navCtrl.navigateForward(`/messages/${room.id}`);
   }
 
-  async exit() {
+  exit() {
     sessionStorage.removeItem('username');
-    await this.chatService.signout();
-    this.navCtrl.goRoot('/signin');
+    this.chatService.signout();
+    this.navCtrl.navigateRoot('/signin');
   }
 
 }

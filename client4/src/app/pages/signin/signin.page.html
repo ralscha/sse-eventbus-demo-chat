@@ -1,8 +1,5 @@
 <ion-header>
   <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
     <ion-title>Signin</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,7 +9,7 @@
     <ion-list>
       <ion-item>
         <ion-label position="stacked">Enter your Nickname</ion-label>
-        <ion-input type="text" [(ngModel)]="username" name="username" required=""></ion-input>
+        <ion-input type="text" [(ngModel)]="username" name="username" (keyup.enter)="enterUsername()"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>
