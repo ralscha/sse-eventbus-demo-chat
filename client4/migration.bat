@@ -1,1 +1,0 @@
-npx tslint -c ionic-migration.json -p tsconfig.json

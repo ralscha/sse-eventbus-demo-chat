@@ -1,4 +1,4 @@
-import '../node_modules/event-source-polyfill/src/eventsource.js'
+import '../node_modules/event-source-polyfill/src/eventsource.js';
 import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 

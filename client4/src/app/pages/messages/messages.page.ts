@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Content, List, NavController} from '@ionic/angular';
 import {ChatService} from '../../services/chat.service';
 import {Message} from '../../models/message';
@@ -55,7 +55,7 @@ export class MessagesPage implements OnInit, OnDestroy {
 
     this.mutationObserver = new MutationObserver(mutations => {
       setTimeout(() => {
-      this.content.scrollToBottom();
+        this.content.scrollToBottom();
       }, 100);
     });
 
