@@ -28,7 +28,7 @@
     "@angular/platform-browser-dynamic": "6.1.10",
     "date-fns": "1.30.1",
     "event-source-polyfill": "0.0.16",
-    "ionic-angular": "3.9.2",
+    "ionic-angular": "3.9.4",
     "ionicons": "4.4.8",
     "rxjs": "6.3.3",
     "rxjs-compat": "6.3.3",
@@ -36,7 +36,7 @@
     "zone.js": "0.8.26"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "3.2.1",
+    "@ionic/app-scripts": "3.2.3",
     "bread-compressor-cli": "1.0.4",
     "html-minifier": "3.5.21",
     "http-server": "0.11.1",
