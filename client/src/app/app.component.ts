@@ -1,12 +1,8 @@
 import {Component} from '@angular/core';
 
-import {SigninPage} from '../pages/signin/signin';
-
 @Component({
-  templateUrl: 'app.html'
+  selector: 'app-root',
+  templateUrl: 'app.component.html'
 })
-export class MyApp {
-  rootPage: any = SigninPage;
-
+export class AppComponent {
 }
-

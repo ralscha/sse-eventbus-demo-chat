@@ -1,41 +1,27 @@
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {ErrorHandler, NgModule} from '@angular/core';
-import {IonicApp, IonicErrorHandler, IonicModule} from 'ionic-angular';
-import {MyApp} from './app.component';
-import {HomePage} from '../pages/home/home';
-import {AddRoomPage} from "../pages/add-room/add-room";
-import {SigninPage} from "../pages/signin/signin";
-import {RoomPage} from "../pages/room/room";
-import {ChatService} from '../providers/chat-service';
-import {EmojiPickerComponent} from "../components/emoji-picker/emoji-picker";
-import {RelativeTime} from "../pipes/realative-time";
+import {RouteReuseStrategy} from '@angular/router';
+import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
+import {AppComponent} from './app.component';
+import {AppRoutingModule} from './app-routing.module';
+import {RelativeTimePipe} from './pipes/relative-time.pipe';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {EmojiPickerComponent} from './components/emoji-picker/emoji-picker';
+import {AddRoomPage} from './pages/add-room/add-room.page';
+import {MessagesPage} from './pages/messages/messages.page';
+import {RoomPage} from './pages/room/room.page';
+import {SigninPage} from './pages/signin/signin.page';
 
 @NgModule({
-  declarations: [
-    MyApp,
-    HomePage,
-    AddRoomPage,
-    RoomPage,
-    SigninPage,
-    EmojiPickerComponent,
-    RelativeTime
-  ],
-  imports: [
-    BrowserModule,
-    IonicModule.forRoot(MyApp)
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    HomePage,
-    AddRoomPage,
-    RoomPage,
-    SigninPage
-  ],
+  declarations: [AppComponent, RelativeTimePipe, EmojiPickerComponent, AddRoomPage, MessagesPage, RoomPage, SigninPage],
+  entryComponents: [],
+  imports: [BrowserModule, CommonModule,
+    FormsModule, IonicModule.forRoot(), AppRoutingModule],
   providers: [
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    ChatService
-  ]
+    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }

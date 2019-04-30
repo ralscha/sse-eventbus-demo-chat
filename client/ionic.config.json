@@ -1,6 +1,5 @@
 {
-  "name": "chat",
+  "name": "chat4",
   "integrations": {},
-  "type": "ionic-angular",
-  "hooks": {}
+  "type": "angular"
 }
