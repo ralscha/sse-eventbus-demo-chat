@@ -23,7 +23,7 @@
               "src/assets",
               "src/manifest.json",
               {
-                "glob": "@(md-add.svg|md-chatboxes.svg|md-arrow-back.svg|md-exit.svg|md-close.svg|md-happy.svg|md-send.svg|ios-add.svg|ios-chatboxes.svg|ios-arrow-back.svg|ios-exit.svg|ios-close.svg|ios-happy.svg|ios-send.svg)",
+                "glob": "@(add.svg|chatbox.svg|arrow-back-sharp.svg|exit.svg|close.svg|happy.svg|send.svg|chevron-back.svg|chevron-forward.svg)",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
               }

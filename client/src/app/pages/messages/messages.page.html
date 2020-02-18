@@ -14,8 +14,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content no-border>
-  <ion-list>
+<ion-content class="ion-no-border">
+  <ion-list lines="none">
     <ion-item *ngFor="let msg of messages">
       <ion-label>
         <div class="status ion-text-center" *ngIf="msg.type==='JOIN'||msg.type==='LEAVE';else message">

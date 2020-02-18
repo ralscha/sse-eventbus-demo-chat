@@ -4,9 +4,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
   <form (ngSubmit)="enterUsername()">
-    <ion-list>
+    <ion-list lines="none">
       <ion-item>
         <ion-label position="stacked">Enter your Nickname</ion-label>
         <ion-input type="text" [(ngModel)]="username" name="username" (keyup.enter)="enterUsername()"></ion-input>
