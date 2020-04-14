@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  SERVER_URL: 'https://tahc.hplar.ch'
+  SERVER_URL: 'https://localhost:8080'
 };

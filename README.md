@@ -11,12 +11,6 @@ Automatic Scroll to Bottom with Mutation Observers:
 https://www.joshmorony.com/automatic-scroll-to-bottom-chat-interface-with-mutation-observers-in-ionic/
 
 
-### Online
-
-You can play with the application here: https://tahc.hplar.ch
-
-
-
 ### Run the application locally
 
 ```
