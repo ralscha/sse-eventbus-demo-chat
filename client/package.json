@@ -19,9 +19,9 @@
     "@angular/platform-browser": "9.1.11",
     "@angular/platform-browser-dynamic": "9.1.11",
     "@angular/router": "9.1.11",
-    "@ionic/angular": "5.2.2",
+    "@ionic/angular": "5.2.3",
     "date-fns": "2.14.0",
-    "rxjs": "6.5.5",
+    "rxjs": "6.6.0",
     "tslib": "1.13.0",
     "zone.js": "0.10.3",
     "event-source-polyfill": "1.0.15"
@@ -34,7 +34,7 @@
     "@ionic/angular-toolkit": "2.2.0",
     "bread-compressor-cli": "1.1.0",
     "@types/node": "14.0.14",
-    "codelyzer": "5.2.2",
+    "codelyzer": "6.0.0-next.1",
     "local-web-server": "4.2.1",
     "tslint": "6.1.2",
     "typescript": "3.8.3"
