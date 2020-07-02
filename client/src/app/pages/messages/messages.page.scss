@@ -9,7 +9,6 @@ ion-footer {
   background: -ms-linear-gradient(142deg, rgba(153, 153, 153, 1) 0%, rgba(41, 41, 41, 1) 100%);
   background: linear-gradient(308deg, rgba(153, 153, 153, 1) 0%, rgba(41, 41, 41, 1) 100%);
   color: white;
-
   ion-icon {
     padding: 10px;
     font-size: 20px;
@@ -19,7 +18,6 @@ ion-footer {
 
 .status {
   min-height: 49px;
-
   .date {
     display: block;
     font-size: 10px;
@@ -30,7 +28,6 @@ ion-footer {
     left: 10%;
     right: 10%;
   }
-
   .content-center {
     padding: 5px 10px;
     background-color: #e1e1f7;
@@ -45,11 +42,9 @@ ion-footer {
 
 .message-wrap {
   padding: 0 10px;
-
   .message {
     position: relative;
     padding: 7px 0;
-
     .user-img {
       position: absolute;
       border-radius: 45px;
@@ -61,11 +56,9 @@ ion-footer {
     .msg-detail {
       width: 100%;
       display: inline-block;
-
       p {
         margin: 0;
       }
-
       .msg-info {
         p {
           font-size: .8em;
@@ -82,7 +75,6 @@ ion-footer {
         color: #fff;
         width: auto;
         max-width: 80%;
-
         span.triangle {
           background-color: #fff;
           border-radius: 2px;
@@ -107,24 +99,19 @@ ion-footer {
       background-color: $toUserBackgroundColor;
       float: left;
     }
-
     .msg-detail {
       padding-left: 60px;
     }
-
     .user-img {
       left: 0;
     }
-
     .msg-content {
       color: #343434;
-
       span.triangle {
         border-top-width: 0 !important;
         border-right-width: 0 !important;
         left: -5px;
       }
-
       p.line-breaker {
         color: black !important;
         white-space: pre-line;
@@ -136,26 +123,21 @@ ion-footer {
   .message.right {
     .msg-detail {
       padding-right: 60px;
-
       .msg-info {
         text-align: right;
       }
     }
-
     .user-img {
       right: 0;
     }
-
     ion-spinner {
       position: absolute;
       right: 10px;
       top: 50px;
     }
-
     .msg-content {
       background-color: $userBackgroundColor;
       float: right;
-
       span.triangle {
         background-color: $userBackgroundColor !important;
         border-bottom-width: 0 !important;
@@ -176,7 +158,6 @@ ion-footer {
 .input-wrap {
   padding: 5px;
   display: flex;
-
   textarea {
     flex: 1;
     border: 0;
