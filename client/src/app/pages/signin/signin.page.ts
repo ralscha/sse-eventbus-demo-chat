@@ -9,14 +9,14 @@ import {ChatService} from '../../services/chat.service';
 })
 export class SigninPage implements OnInit {
 
-  username: string;
+  username: string | null = null;
 
   constructor(private readonly navCtrl: NavController,
               private readonly chatService: ChatService,
               private readonly alertCtrl: AlertController) {
   }
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     const username = sessionStorage.getItem('username');
     if (username !== null) {
       const ok = await this.chatService.signin(username, true);
@@ -28,22 +28,24 @@ export class SigninPage implements OnInit {
     }
   }
 
-  async enterUsername() {
-    const ok = await this.chatService.signin(this.username);
-    if (ok) {
-      sessionStorage.setItem('username', this.username);
-      this.username = '';
-      this.navCtrl.navigateRoot('room');
-    } else {
-      const alert = await this.alertCtrl.create({
-        header: 'Error',
-        message: 'Username already exists',
-        buttons: [{
-          text: 'OK',
-          role: 'cancel'
-        }]
-      });
-      await alert.present();
+  async enterUsername(): Promise<void> {
+    if (this.username !== null) {
+      const ok = await this.chatService.signin(this.username);
+      if (ok) {
+        sessionStorage.setItem('username', this.username);
+        this.username = '';
+        this.navCtrl.navigateRoot('room');
+      } else {
+        const alert = await this.alertCtrl.create({
+          header: 'Error',
+          message: 'Username already exists',
+          buttons: [{
+            text: 'OK',
+            role: 'cancel'
+          }]
+        });
+        await alert.present();
+      }
     }
   }
 

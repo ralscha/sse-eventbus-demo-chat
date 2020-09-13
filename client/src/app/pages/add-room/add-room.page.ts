@@ -9,14 +9,14 @@ import {ChatService} from '../../services/chat.service';
 })
 export class AddRoomPage {
 
-  roomname: string;
+  roomname = '';
 
   constructor(private readonly navCtrl: NavController,
               private readonly chatService: ChatService,
               private readonly alertCtrl: AlertController) {
   }
 
-  async addRoom() {
+  async addRoom(): Promise<void> {
     const response = await this.chatService.addRoom(this.roomname);
     const flag = await response.json();
     if (flag) {

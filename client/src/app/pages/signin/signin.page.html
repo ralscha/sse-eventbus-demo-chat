@@ -9,11 +9,11 @@
     <ion-list>
       <ion-item>
         <ion-label position="stacked">Enter your Nickname</ion-label>
-        <ion-input type="text" [(ngModel)]="username" name="username" (keyup.enter)="enterUsername()"></ion-input>
+        <ion-input (keyup.enter)="enterUsername()" [(ngModel)]="username" name="username" type="text"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>
-          <ion-button size="default" color="secondary" expand="block" type="submit">Enter</ion-button>
+          <ion-button color="secondary" expand="block" size="default" type="submit">Enter</ion-button>
         </ion-label>
       </ion-item>
     </ion-list>

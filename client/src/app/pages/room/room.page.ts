@@ -14,15 +14,15 @@ export class RoomPage {
               readonly chatService: ChatService) {
   }
 
-  addRoom() {
+  addRoom(): void {
     this.navCtrl.navigateForward('/add-room');
   }
 
-  joinRoom(room: Room) {
+  joinRoom(room: Room): void {
     this.navCtrl.navigateForward(`/messages/${room.id}`);
   }
 
-  exit() {
+  exit(): void {
     sessionStorage.removeItem('username');
     this.chatService.signout();
     this.navCtrl.navigateRoot('/signin');

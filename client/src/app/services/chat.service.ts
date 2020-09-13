@@ -7,22 +7,24 @@ import {environment} from '../../environments/environment';
 })
 export class ChatService {
 
-  rooms: Room[] = null;
-  username: string = null;
+  rooms: Room[] = [];
+  username: string | null = null;
 
-  private eventSource: any;
-  private clientId: string = null;
-  private roomListener: (resp: any) => any;
+  // tslint:disable-next-line:no-any
+  private eventSource: any = null;
+  private clientId: string | null = null;
+  // tslint:disable-next-line:no-any
+  private roomListener: ((resp: any) => any) | null = null;
 
   private jsonHeaders = new Headers({'Content-Type': 'application/json'});
 
-  isLoggedIn() {
+  isLoggedIn(): boolean {
     return this.clientId !== null;
   }
 
   async signin(username: string, force: boolean = false): Promise<boolean> {
     this.clientId = null;
-    this.rooms = null;
+    this.rooms = [];
     this.username = null;
 
     let url = 'signin';
@@ -43,11 +45,13 @@ export class ChatService {
     this.username = username;
     this.clientId = cid;
     this.eventSource = new EventSource(`${environment.SERVER_URL}/register/${this.clientId}`);
-    this.eventSource.addEventListener('roomAdded', rsp => {
+    // tslint:disable-next-line:no-any
+    this.eventSource.addEventListener('roomAdded', (rsp: any) => {
       const newRoom = JSON.parse(rsp.data);
       this.rooms.push(newRoom);
     });
-    this.eventSource.addEventListener('roomsRemoved', rsp => {
+    // tslint:disable-next-line:no-any
+    this.eventSource.addEventListener('roomsRemoved', (rsp: any) => {
       const roomIds = JSON.parse(rsp.data);
       this.rooms = this.rooms.filter(room => roomIds.indexOf(room.id) === -1);
     });
@@ -62,14 +66,14 @@ export class ChatService {
     return true;
   }
 
-  async signout() {
+  async signout(): Promise<void> {
     await fetch(`${environment.SERVER_URL}/signout`, {
       method: 'POST',
       body: this.clientId
     });
 
     this.clientId = null;
-    this.rooms = null;
+    this.rooms = [];
     this.username = null;
 
     if (this.eventSource) {
@@ -78,7 +82,7 @@ export class ChatService {
     }
   }
 
-  findRoom(roomId: string): Room {
+  findRoom(roomId: string): Room | undefined {
     return this.rooms.find(room => room.id === roomId);
   }
 
@@ -90,7 +94,7 @@ export class ChatService {
     });
   }
 
-  send(roomId: string, message: string) {
+  send(roomId: string, message: string): Promise<Response> {
     return fetch(`${environment.SERVER_URL}/send`, {
       headers: this.jsonHeaders,
       method: 'POST',
@@ -102,7 +106,8 @@ export class ChatService {
     });
   }
 
-  joinRoom(roomId: string, roomListener: (resp: any) => any) {
+  // tslint:disable-next-line:no-any
+  joinRoom(roomId: string, roomListener: (resp: any) => any): Promise<Response> {
     this.roomListener = roomListener;
     this.eventSource.addEventListener(roomId, this.roomListener);
 
@@ -116,7 +121,7 @@ export class ChatService {
     });
   }
 
-  leaveRoom(roomId: string) {
+  leaveRoom(roomId: string): Promise<Response> {
     this.eventSource.removeEventListener(roomId, this.roomListener);
 
     return fetch(`${environment.SERVER_URL}/leave`, {

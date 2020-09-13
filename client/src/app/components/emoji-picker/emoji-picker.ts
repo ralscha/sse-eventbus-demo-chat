@@ -1,5 +1,6 @@
 import {Component, forwardRef} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+// tslint:disable:no-any
 
 export const EMOJI_PICKER_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -17,9 +18,9 @@ export class EmojiPickerComponent implements ControlValueAccessor {
 
   emojiArr: any[] = [];
 
-  private content: string;
-  private onChanged: (fn: any) => void;
-  private onTouched: (fn: any) => void;
+  private content: string | null = null;
+  private onChanged: ((fn: any) => void) | null = null;
+  private onTouched: ((fn: any) => void) | null = null;
 
   constructor() {
     this.emojiArr = this.getEmojis();
@@ -44,12 +45,12 @@ export class EmojiPickerComponent implements ControlValueAccessor {
     } else {
       this.content += val;
     }
-    if (this.content) {
+    if (this.content && this.onChanged) {
       this.onChanged(this.content);
     }
   }
 
-  private getEmojis() {
+  private getEmojis(): string[][] {
     const EMOJIS = '😀 😃 😄 😁 😆 😅 😂 🤣 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 😘 😗 😙 😚 😋 😜 😝 😛 🤑 🤗 🤓 😎 🤡 🤠 😏 😒 😞 😔 😟 😕 🙁' +
       ' ☹️ 😣 😖 😫 😩 😤 😠 😡 😶 😐 😑 😯 😦 😧 😮 😲 😵 😳 😱 😨 😰 😢 😥 🤤 😭 😓 😪 😴 🙄 🤔 🤥 😬 🤐 🤢 🤧 😷 🤒 🤕 😈 👿' +
       ' 👹 👺 💩 👻 💀 ☠️ 👽 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾 👐 🙌 👏 🙏 🤝 👍 👎 👊 ✊ 🤛 🤜 🤞 ✌️ 🤘 👌 👈 👉 👆 👇 ☝️ ✋ 🤚' +
