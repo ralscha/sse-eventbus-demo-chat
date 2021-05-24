@@ -10,10 +10,10 @@ export class ChatService {
   rooms: Room[] = [];
   username: string | null = null;
 
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private eventSource: any = null;
   private clientId: string | null = null;
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private roomListener: ((resp: any) => any) | null = null;
 
   private jsonHeaders = new Headers({'Content-Type': 'application/json'});
@@ -45,12 +45,12 @@ export class ChatService {
     this.username = username;
     this.clientId = cid;
     this.eventSource = new EventSource(`${environment.SERVER_URL}/register/${this.clientId}`);
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.eventSource.addEventListener('roomAdded', (rsp: any) => {
       const newRoom = JSON.parse(rsp.data);
       this.rooms.push(newRoom);
     });
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.eventSource.addEventListener('roomsRemoved', (rsp: any) => {
       const roomIds = JSON.parse(rsp.data);
       this.rooms = this.rooms.filter(room => roomIds.indexOf(room.id) === -1);
@@ -106,7 +106,7 @@ export class ChatService {
     });
   }
 
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   joinRoom(roomId: string, roomListener: (resp: any) => any): Promise<Response> {
     this.roomListener = roomListener;
     this.eventSource.addEventListener(roomId, this.roomListener);
