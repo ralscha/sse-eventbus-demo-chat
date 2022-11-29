@@ -22,7 +22,7 @@ export class ChatService {
     return this.clientId !== null;
   }
 
-  async signin(username: string, force: boolean = false): Promise<boolean> {
+  async signin(username: string, force = false): Promise<boolean> {
     this.clientId = null;
     this.rooms = [];
     this.username = null;
