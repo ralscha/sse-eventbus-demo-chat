@@ -8,8 +8,9 @@
   <form (ngSubmit)="enterUsername()">
     <ion-list>
       <ion-item>
-        <ion-label position="stacked">Enter your Nickname</ion-label>
-        <ion-input (keyup.enter)="enterUsername()" [(ngModel)]="username" name="username" type="text"></ion-input>
+        <ion-input (keyup.enter)="enterUsername()" [(ngModel)]="username"
+                   label="Enter your Nickname" labelPlacement="stacked"
+                   name="username" type="text"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>
