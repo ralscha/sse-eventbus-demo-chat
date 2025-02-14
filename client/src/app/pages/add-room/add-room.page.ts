@@ -1,11 +1,26 @@
 import {Component} from '@angular/core';
 import {AlertController, NavController} from '@ionic/angular';
 import {ChatService} from '../../services/chat.service';
+import {FormsModule} from '@angular/forms';
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar
+} from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-add-room',
   templateUrl: './add-room.page.html',
   styleUrls: ['./add-room.page.scss'],
+  imports: [FormsModule, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonInput, IonLabel, IonButton]
 })
 export class AddRoomPage {
 

@@ -1,12 +1,12 @@
-import {inject, NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {inject} from '@angular/core';
+import {Routes} from '@angular/router';
 import {MessagesPage} from './pages/messages/messages.page';
 import {RoomPage} from './pages/room/room.page';
 import {AddRoomPage} from './pages/add-room/add-room.page';
 import {SigninPage} from './pages/signin/signin.page';
 import {AuthGuard} from './services/auth-guard.service';
 
-const routes: Routes = [
+export const routes: Routes = [
   {path: '', redirectTo: 'room', pathMatch: 'full'},
   {path: 'messages/:id', component: MessagesPage, canActivate: [() => inject(AuthGuard).canActivate()]},
   {path: 'room', component: RoomPage, canActivate: [() => inject(AuthGuard).canActivate()]},
@@ -14,10 +14,3 @@ const routes: Routes = [
   {path: 'signin', component: SigninPage},
   {path: '**', redirectTo: '/'},
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, {useHash: true})],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {
-}

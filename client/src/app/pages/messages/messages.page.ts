@@ -1,13 +1,34 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {IonContent, IonList, NavController} from '@ionic/angular';
+import {NavController} from '@ionic/angular';
 import {ChatService} from '../../services/chat.service';
 import {Message} from '../../models/message';
 import {ActivatedRoute} from '@angular/router';
+import {FormsModule} from '@angular/forms';
+import {EmojiPickerComponent} from '../../components/emoji-picker/emoji-picker';
+import {RelativeTimePipe} from '../../pipes/relative-time.pipe';
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonFooter,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTextarea,
+  IonTitle,
+  IonToolbar
+} from "@ionic/angular/standalone";
+import {addIcons} from "ionicons";
+import {exitOutline, happySharp, sendSharp} from "ionicons/icons";
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.page.html',
   styleUrls: ['./messages.page.scss'],
+  imports: [FormsModule, EmojiPickerComponent, RelativeTimePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonItem, IonLabel, IonButton, IonIcon, IonList, IonFooter, IonTextarea, IonContent]
 })
 export class MessagesPage implements OnInit, OnDestroy {
 
@@ -28,6 +49,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   constructor(private readonly route: ActivatedRoute,
               private readonly navCtrl: NavController,
               readonly chatService: ChatService) {
+    addIcons({exitOutline, happySharp, sendSharp});
   }
 
   async exit(): Promise<void> {

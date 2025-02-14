@@ -1,11 +1,24 @@
 import {Component, OnInit} from '@angular/core';
 import {AlertController, NavController} from '@ionic/angular';
 import {ChatService} from '../../services/chat.service';
+import {FormsModule} from '@angular/forms';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar
+} from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.page.html',
   styleUrls: ['./signin.page.scss'],
+  imports: [FormsModule, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonButton, IonContent, IonList, IonInput]
 })
 export class SigninPage implements OnInit {
 
