@@ -1,8 +1,4 @@
-import {Component} from '@angular/core';
-import {NavController} from '@ionic/angular';
-import {ChatService} from '../../services/chat.service';
-import {Room} from '../../models/room';
-import {FormsModule} from "@angular/forms";
+import {Component, inject} from '@angular/core';
 import {
   IonBackButton,
   IonButton,
@@ -16,8 +12,12 @@ import {
   IonLabel,
   IonList,
   IonTitle,
-  IonToolbar
-} from "@ionic/angular/standalone";
+  IonToolbar,
+  NavController
+} from '@ionic/angular/standalone';
+import {ChatService} from '../../services/chat.service';
+import {Room} from '../../models/room';
+import {FormsModule} from "@angular/forms";
 import {addIcons} from "ionicons";
 import {addSharp, chatbubbleSharp, exitOutline} from "ionicons/icons";
 
@@ -28,9 +28,10 @@ import {addSharp, chatbubbleSharp, exitOutline} from "ionicons/icons";
   imports: [FormsModule, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonItem, IonLabel, IonButton, IonIcon, IonContent, IonList, IonFab, IonFabButton]
 })
 export class RoomPage {
+  readonly chatService = inject(ChatService);
+  private readonly navCtrl = inject(NavController);
 
-  constructor(private readonly navCtrl: NavController,
-              readonly chatService: ChatService) {
+  constructor() {
     addIcons({exitOutline, chatbubbleSharp, addSharp});
   }
 

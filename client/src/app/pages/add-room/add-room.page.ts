@@ -1,8 +1,6 @@
-import {Component} from '@angular/core';
-import {AlertController, NavController} from '@ionic/angular';
-import {ChatService} from '../../services/chat.service';
-import {FormsModule} from '@angular/forms';
+import {Component, inject} from '@angular/core';
 import {
+  AlertController,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -13,8 +11,11 @@ import {
   IonLabel,
   IonList,
   IonTitle,
-  IonToolbar
-} from "@ionic/angular/standalone";
+  IonToolbar,
+  NavController
+} from '@ionic/angular/standalone';
+import {ChatService} from '../../services/chat.service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-add-room',
@@ -23,13 +24,10 @@ import {
   imports: [FormsModule, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonInput, IonLabel, IonButton]
 })
 export class AddRoomPage {
-
   roomname = '';
-
-  constructor(private readonly navCtrl: NavController,
-              private readonly chatService: ChatService,
-              private readonly alertCtrl: AlertController) {
-  }
+  private readonly navCtrl = inject(NavController);
+  private readonly chatService = inject(ChatService);
+  private readonly alertCtrl = inject(AlertController);
 
   async addRoom(): Promise<void> {
     const response = await this.chatService.addRoom(this.roomname);

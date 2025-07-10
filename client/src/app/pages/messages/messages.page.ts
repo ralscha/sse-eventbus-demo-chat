@@ -1,11 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {NavController} from '@ionic/angular';
-import {ChatService} from '../../services/chat.service';
-import {Message} from '../../models/message';
-import {ActivatedRoute} from '@angular/router';
-import {FormsModule} from '@angular/forms';
-import {EmojiPickerComponent} from '../../components/emoji-picker/emoji-picker';
-import {RelativeTimePipe} from '../../pipes/relative-time.pipe';
+import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
   IonBackButton,
   IonButton,
@@ -19,8 +12,15 @@ import {
   IonList,
   IonTextarea,
   IonTitle,
-  IonToolbar
-} from "@ionic/angular/standalone";
+  IonToolbar,
+  NavController
+} from '@ionic/angular/standalone';
+import {ChatService} from '../../services/chat.service';
+import {Message} from '../../models/message';
+import {ActivatedRoute} from '@angular/router';
+import {FormsModule} from '@angular/forms';
+import {EmojiPickerComponent} from '../../components/emoji-picker/emoji-picker';
+import {RelativeTimePipe} from '../../pipes/relative-time.pipe';
 import {addIcons} from "ionicons";
 import {exitOutline, happySharp, sendSharp} from "ionicons/icons";
 
@@ -31,24 +31,21 @@ import {exitOutline, happySharp, sendSharp} from "ionicons/icons";
   imports: [FormsModule, EmojiPickerComponent, RelativeTimePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonItem, IonLabel, IonButton, IonIcon, IonList, IonFooter, IonTextarea, IonContent]
 })
 export class MessagesPage implements OnInit, OnDestroy {
-
+  readonly chatService = inject(ChatService);
   @ViewChild(IonContent, {static: true}) content!: IonContent;
-
   message = '';
   messages: Message[] = [];
   roomId: string | null = null;
   roomName: string | null = null;
   showEmojiPicker = false;
-
   @ViewChild('messageInput', {static: true}) messageInput!: ElementRef;
-
+  private readonly route = inject(ActivatedRoute);
+  private readonly navCtrl = inject(NavController);
   @ViewChild(IonList, {read: ElementRef, static: true})
   private chatElement!: ElementRef;
   private mutationObserver!: MutationObserver;
 
-  constructor(private readonly route: ActivatedRoute,
-              private readonly navCtrl: NavController,
-              readonly chatService: ChatService) {
+  constructor() {
     addIcons({exitOutline, happySharp, sendSharp});
   }
 

@@ -1,6 +1,6 @@
-import {Component, forwardRef, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, forwardRef} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {IonicSlides} from "@ionic/angular";
+import {IonicSlides} from "@ionic/angular/standalone";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const EMOJI_PICKER_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

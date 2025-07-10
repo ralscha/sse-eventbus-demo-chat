@@ -1,8 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {AlertController, NavController} from '@ionic/angular';
-import {ChatService} from '../../services/chat.service';
-import {FormsModule} from '@angular/forms';
+import {Component, inject, OnInit} from '@angular/core';
 import {
+  AlertController,
   IonButton,
   IonContent,
   IonHeader,
@@ -11,8 +9,11 @@ import {
   IonLabel,
   IonList,
   IonTitle,
-  IonToolbar
-} from "@ionic/angular/standalone";
+  IonToolbar,
+  NavController
+} from '@ionic/angular/standalone';
+import {ChatService} from '../../services/chat.service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-signin',
@@ -21,13 +22,10 @@ import {
   imports: [FormsModule, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonButton, IonContent, IonList, IonInput]
 })
 export class SigninPage implements OnInit {
-
   username: string | null = null;
-
-  constructor(private readonly navCtrl: NavController,
-              private readonly chatService: ChatService,
-              private readonly alertCtrl: AlertController) {
-  }
+  private readonly navCtrl = inject(NavController);
+  private readonly chatService = inject(ChatService);
+  private readonly alertCtrl = inject(AlertController);
 
   async ngOnInit(): Promise<void> {
     const username = sessionStorage.getItem('username');
