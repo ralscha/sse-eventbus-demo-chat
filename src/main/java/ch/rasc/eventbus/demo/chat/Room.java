@@ -1,7 +1,9 @@
 package ch.rasc.eventbus.demo.chat;
 
 public class Room {
+
 	private String id;
+
 	private String name;
 
 	public String getId() {
@@ -19,4 +21,5 @@ public class Room {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 }

@@ -7,6 +7,7 @@ import ch.rasc.sse.eventbus.DefaultSubscriptionRegistry;
 
 @Component
 public class CustomSubscriptionRegistry extends DefaultSubscriptionRegistry {
+
 	private final ApplicationEventPublisher eventPublisher;
 
 	public CustomSubscriptionRegistry(ApplicationEventPublisher eventPublisher) {

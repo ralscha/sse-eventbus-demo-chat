@@ -40,8 +40,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.3</version>
-		<relativePath />
+		<version>4.0.5</version>
+		<relativePath/>
 	</parent>
 
 	<properties>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>ch.rasc</groupId>
 			<artifactId>sse-eventbus</artifactId>
-			<version>3.0.0</version>
+			<version>3.1.0</version>
 		</dependency>
 
 		<dependency>
@@ -74,6 +74,12 @@
 		<finalName>tahc</finalName>
 
 		<plugins>
+			<plugin>
+				<groupId>io.spring.javaformat</groupId>
+				<artifactId>spring-javaformat-maven-plugin</artifactId>
+				<version>0.0.47</version>
+			</plugin>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

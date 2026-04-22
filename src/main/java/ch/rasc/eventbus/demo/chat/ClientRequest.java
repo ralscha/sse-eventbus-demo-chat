@@ -1,6 +1,7 @@
 package ch.rasc.eventbus.demo.chat;
 
 public class ClientRequest {
+
 	private String clientId;
 
 	private String roomId;

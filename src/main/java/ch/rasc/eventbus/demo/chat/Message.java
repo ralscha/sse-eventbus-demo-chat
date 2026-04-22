@@ -1,9 +1,13 @@
 package ch.rasc.eventbus.demo.chat;
 
 public class Message {
+
 	private MessageType type;
+
 	private String user;
+
 	private String message;
+
 	private long sendDate;
 
 	public MessageType getType() {

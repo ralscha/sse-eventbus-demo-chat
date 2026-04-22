@@ -48,33 +48,32 @@ public class ChatController {
 
 	@PostMapping("/signin")
 	public String signin(@RequestBody String nickname) {
-		if (this.users.values().stream().filter(name -> name.equals(nickname)).findAny()
-				.isPresent()) {
+		if (this.users.values().stream().filter(name -> name.equals(nickname)).findAny().isPresent()) {
 			return null;
 		}
 		String clientId = String.valueOf(this.clientIdGenerator.incrementAndGet());
 		this.users.put(clientId, nickname);
 		return clientId;
 	}
-	
+
 	@PostMapping("/signinExisting")
 	public String signinExisting(@RequestBody String nickname) {
-		
+
 		String clientId = null;
-		for (Map.Entry<String,String> entry : this.users.entrySet()) {
+		for (Map.Entry<String, String> entry : this.users.entrySet()) {
 			if (entry.getValue().equals(nickname)) {
 				clientId = entry.getKey();
 				break;
 			}
 		}
-		
+
 		if (clientId == null) {
 			clientId = String.valueOf(this.clientIdGenerator.incrementAndGet());
 			this.users.put(clientId, nickname);
 		}
 
 		return clientId;
-	}	
+	}
 
 	@PostMapping("/signout")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -93,8 +92,7 @@ public class ChatController {
 		this.eventBus.subscribe(clientId, "roomAdded");
 		this.eventBus.subscribe(clientId, "roomsRemoved");
 
-		return this.rooms.values().stream().sorted(Comparator.comparing(Room::getName))
-				.collect(Collectors.toList());
+		return this.rooms.values().stream().sorted(Comparator.comparing(Room::getName)).collect(Collectors.toList());
 	}
 
 	@PostMapping("/addRoom")
@@ -104,8 +102,7 @@ public class ChatController {
 			return false;
 		}
 
-		if (this.rooms.values().stream().filter(room -> room.getName().equals(roomName))
-				.findAny().isPresent()) {
+		if (this.rooms.values().stream().filter(room -> room.getName().equals(roomName)).findAny().isPresent()) {
 			return false;
 		}
 
@@ -135,8 +132,7 @@ public class ChatController {
 
 		this.eventBus.unsubscribe(request.getClientId(), request.getRoomId());
 
-		this.eventBus.handleEvent(
-				SseEvent.of(request.getRoomId(), Collections.singletonList(message)));
+		this.eventBus.handleEvent(SseEvent.of(request.getRoomId(), Collections.singletonList(message)));
 	}
 
 	@PostMapping("/join")
@@ -156,13 +152,17 @@ public class ChatController {
 
 		this.eventBus.subscribe(request.getClientId(), request.getRoomId());
 
-		this.eventBus.handleEvent(SseEvent.builder().event(request.getRoomId())
-				.data(getMessages(request.getRoomId())).addClientId(request.getClientId())
-				.build());
+		this.eventBus.handleEvent(SseEvent.builder()
+			.event(request.getRoomId())
+			.data(getMessages(request.getRoomId()))
+			.addClientId(request.getClientId())
+			.build());
 
-		this.eventBus.handleEvent(SseEvent.builder().event(request.getRoomId())
-				.data(Collections.singletonList(message))
-				.addExcludeClientId(request.getClientId()).build());
+		this.eventBus.handleEvent(SseEvent.builder()
+			.event(request.getRoomId())
+			.data(Collections.singletonList(message))
+			.addExcludeClientId(request.getClientId())
+			.build());
 	}
 
 	@PostMapping("/send")
@@ -180,25 +180,26 @@ public class ChatController {
 		message.setUser(userName);
 		store(request.getRoomId(), message);
 
-		this.eventBus.handleEvent(
-				SseEvent.of(request.getRoomId(), Collections.singleton(message)));
+		this.eventBus.handleEvent(SseEvent.of(request.getRoomId(), Collections.singleton(message)));
 	}
 
 	private List<Message> getMessages(String roomId) {
 		Cache<Message, Boolean> cache = this.roomMessages.get(roomId);
 		if (cache != null) {
-			return cache.asMap().keySet().stream()
-					.sorted(Comparator.comparing(Message::getSendDate))
-					.collect(Collectors.toList());
+			return cache.asMap()
+				.keySet()
+				.stream()
+				.sorted(Comparator.comparing(Message::getSendDate))
+				.collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}
 
 	private void store(String roomId, Message message) {
 		this.roomMessages
-				.computeIfAbsent(roomId, k -> Caffeine.newBuilder()
-						.expireAfterWrite(6, TimeUnit.HOURS).maximumSize(100).build())
-				.put(message, true);
+			.computeIfAbsent(roomId,
+					k -> Caffeine.newBuilder().expireAfterWrite(6, TimeUnit.HOURS).maximumSize(100).build())
+			.put(message, true);
 	}
 
 	@Scheduled(fixedDelay = 21_600_000)

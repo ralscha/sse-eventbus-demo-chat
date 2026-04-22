@@ -1,0 +1,16 @@
+version: '3'
+
+vars:
+  MVNW: '{{if eq OS "windows"}}cmd /c mvnw.cmd{{else}}./mvnw{{end}}'
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - cmd: task --list
+    silent: true
+
+  format:
+    desc: Apply Spring Java Format
+    cmds:
+      - '{{.MVNW}} -B -ntp spring-javaformat:apply'
