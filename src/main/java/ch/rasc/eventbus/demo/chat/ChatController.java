@@ -198,7 +198,7 @@ public class ChatController {
 	private void store(String roomId, Message message) {
 		this.roomMessages
 			.computeIfAbsent(roomId,
-					k -> Caffeine.newBuilder().expireAfterWrite(6, TimeUnit.HOURS).maximumSize(100).build())
+					_ -> Caffeine.newBuilder().expireAfterWrite(6, TimeUnit.HOURS).maximumSize(100).build())
 			.put(message, true);
 	}
 
