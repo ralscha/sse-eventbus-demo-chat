@@ -16,16 +16,19 @@ https://www.joshmorony.com/automatic-scroll-to-bottom-chat-interface-with-mutati
 ```
 git clone https://github.com/ralscha/sse-eventbus-demo-chat.git
 cd sse-eventbus-demo-chat
-./mvnw package  (Windows: .\mvnw.cmd package)
-java -jar target/tahc.jar
-```
-In another shell
-```
-cd sse-eventbus-demo-chat/client
-npm install
-ionic serve
+task demo
 ```
 
+Open `http://localhost:4200`.
+
+To build a self-contained executable jar that includes the frontend:
+
+```
+task package
+java -jar target/tahc.jar
+```
+
+Then open `http://localhost:8080`.
 
 ### License
 Code released under [the Apache license](http://www.apache.org/licenses/).

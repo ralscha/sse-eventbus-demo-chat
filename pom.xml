@@ -33,14 +33,14 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:ralscha/sse-eventbus-demo.git</connection>
-    <developerConnection>scm:git:git@github.com:ralscha/sse-eventbus-demo.git</developerConnection>
-    <url>https://github.com/ralscha/sse-eventbus-demo.git</url>
+    <connection>scm:git:git@github.com:ralscha/sse-eventbus-demo-chat.git</connection>
+    <developerConnection>scm:git:git@github.com:ralscha/sse-eventbus-demo-chat.git</developerConnection>
+    <url>https://github.com/ralscha/sse-eventbus-demo-chat.git</url>
   </scm>
 
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/ralscha/sse-eventbus-demo/issues</url>
+    <url>https://github.com/ralscha/sse-eventbus-demo-chat/issues</url>
   </issueManagement>
 
   <properties>
@@ -59,12 +59,25 @@
     <dependency>
       <groupId>ch.rasc</groupId>
       <artifactId>sse-eventbus</artifactId>
-      <version>3.2.0</version>
+      <version>3.2.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value-annotations</artifactId>
+      <version>2.12.2</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
@@ -82,9 +95,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <executable>true</executable>
-        </configuration>
       </plugin>
 
       <plugin>

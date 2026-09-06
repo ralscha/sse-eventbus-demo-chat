@@ -1,6 +1,5 @@
 package ch.rasc.eventbus.demo.chat;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
@@ -36,9 +34,9 @@ public class ChatController {
 
 	private final SseEventBus eventBus;
 
-	private final AtomicLong roomIdGenerator = new AtomicLong(1);
+	private final AtomicLong roomIdGenerator = new AtomicLong();
 
-	private final AtomicLong clientIdGenerator = new AtomicLong(1);
+	private final AtomicLong clientIdGenerator = new AtomicLong();
 
 	private final Map<String, String> users = new ConcurrentHashMap<>();
 
@@ -47,21 +45,29 @@ public class ChatController {
 	}
 
 	@PostMapping("/signin")
-	public String signin(@RequestBody String nickname) {
-		if (this.users.values().stream().filter(name -> name.equals(nickname)).findAny().isPresent()) {
+	public synchronized String signin(@RequestBody String nickname) {
+		if (nickname == null) {
+			return null;
+		}
+		String normalizedNickname = nickname.strip();
+		if (normalizedNickname.isEmpty() || this.users.containsValue(normalizedNickname)) {
 			return null;
 		}
 		String clientId = String.valueOf(this.clientIdGenerator.incrementAndGet());
-		this.users.put(clientId, nickname);
+		this.users.put(clientId, normalizedNickname);
 		return clientId;
 	}
 
 	@PostMapping("/signinExisting")
-	public String signinExisting(@RequestBody String nickname) {
+	public synchronized String signinExisting(@RequestBody String nickname) {
+		if (nickname == null || nickname.isBlank()) {
+			return null;
+		}
+		String normalizedNickname = nickname.strip();
 
 		String clientId = null;
 		for (Map.Entry<String, String> entry : this.users.entrySet()) {
-			if (entry.getValue().equals(nickname)) {
+			if (entry.getValue().equals(normalizedNickname)) {
 				clientId = entry.getKey();
 				break;
 			}
@@ -69,7 +75,7 @@ public class ChatController {
 
 		if (clientId == null) {
 			clientId = String.valueOf(this.clientIdGenerator.incrementAndGet());
-			this.users.put(clientId, nickname);
+			this.users.put(clientId, normalizedNickname);
 		}
 
 		return clientId;
@@ -84,32 +90,33 @@ public class ChatController {
 
 	@EventListener
 	public void unregisterClient(ClientUnregisterEvent event) {
-		this.users.remove(event.getClientId());
+		this.users.remove(event.clientId());
 	}
 
 	@PostMapping("/subscribe")
 	public List<Room> subscribe(@RequestBody String clientId) {
+		if (!this.users.containsKey(clientId)) {
+			return List.of();
+		}
 		this.eventBus.subscribe(clientId, "roomAdded");
 		this.eventBus.subscribe(clientId, "roomsRemoved");
 
-		return this.rooms.values().stream().sorted(Comparator.comparing(Room::getName)).collect(Collectors.toList());
+		return this.rooms.values().stream().sorted(Comparator.comparing(Room::name)).toList();
 	}
 
 	@PostMapping("/addRoom")
-	public boolean addRoom(@RequestBody String roomName) {
+	public synchronized boolean addRoom(@RequestBody String roomName) {
+		if (roomName == null || roomName.isBlank()) {
+			return false;
+		}
+		String normalizedRoomName = roomName.strip();
 
-		if (roomName == null || roomName.trim().length() == 0) {
+		if (this.rooms.values().stream().anyMatch(room -> room.name().equals(normalizedRoomName))) {
 			return false;
 		}
 
-		if (this.rooms.values().stream().filter(room -> room.getName().equals(roomName)).findAny().isPresent()) {
-			return false;
-		}
-
-		Room room = new Room();
-		room.setId(String.valueOf(this.roomIdGenerator.incrementAndGet()));
-		room.setName(roomName);
-		this.rooms.put(room.getId(), room);
+		Room room = new Room(String.valueOf(this.roomIdGenerator.incrementAndGet()), normalizedRoomName);
+		this.rooms.put(room.id(), room);
 
 		this.eventBus.handleEvent(SseEvent.of("roomAdded", room));
 		return true;
@@ -118,81 +125,67 @@ public class ChatController {
 	@PostMapping("/leave")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void leaveRoom(@RequestBody ClientRequest request) {
-		String userName = this.users.get(request.getClientId());
-		if (userName == null) {
+		if (!isValidRoomRequest(request)) {
 			return;
 		}
+		String userName = this.users.get(request.clientId());
 
-		Message message = new Message();
-		message.setMessage(userName + " has left the room");
-		message.setSendDate(System.currentTimeMillis());
-		message.setType(MessageType.LEAVE);
-		message.setUser(userName);
-		store(request.getRoomId(), message);
+		Message message = new Message(MessageType.LEAVE, userName, userName + " has left the room",
+				System.currentTimeMillis());
+		store(request.roomId(), message);
 
-		this.eventBus.unsubscribe(request.getClientId(), request.getRoomId());
+		this.eventBus.unsubscribe(request.clientId(), request.roomId());
 
-		this.eventBus.handleEvent(SseEvent.of(request.getRoomId(), Collections.singletonList(message)));
+		this.eventBus.handleEvent(SseEvent.of(request.roomId(), List.of(message)));
 	}
 
 	@PostMapping("/join")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void joinRoom(@RequestBody ClientRequest request) {
-		String userName = this.users.get(request.getClientId());
-		if (userName == null) {
+		if (!isValidRoomRequest(request)) {
 			return;
 		}
+		String userName = this.users.get(request.clientId());
 
-		Message message = new Message();
-		message.setMessage(userName + " has joined the room");
-		message.setSendDate(System.currentTimeMillis());
-		message.setType(MessageType.JOIN);
-		message.setUser(userName);
-		store(request.getRoomId(), message);
+		Message message = new Message(MessageType.JOIN, userName, userName + " has joined the room",
+				System.currentTimeMillis());
+		store(request.roomId(), message);
 
-		this.eventBus.subscribe(request.getClientId(), request.getRoomId());
+		this.eventBus.subscribe(request.clientId(), request.roomId());
 
 		this.eventBus.handleEvent(SseEvent.builder()
-			.event(request.getRoomId())
-			.data(getMessages(request.getRoomId()))
-			.addClientId(request.getClientId())
+			.event(request.roomId())
+			.data(getMessages(request.roomId()))
+			.addClientId(request.clientId())
 			.build());
 
 		this.eventBus.handleEvent(SseEvent.builder()
-			.event(request.getRoomId())
-			.data(Collections.singletonList(message))
-			.addExcludeClientId(request.getClientId())
+			.event(request.roomId())
+			.data(List.of(message))
+			.addExcludeClientId(request.clientId())
 			.build());
 	}
 
 	@PostMapping("/send")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void sendMessage(@RequestBody ClientRequest request) {
-		String userName = this.users.get(request.getClientId());
-		if (userName == null) {
+		if (!isValidRoomRequest(request) || request.message() == null || request.message().isBlank()) {
 			return;
 		}
+		String userName = this.users.get(request.clientId());
 
-		Message message = new Message();
-		message.setMessage(request.getMessage());
-		message.setSendDate(System.currentTimeMillis());
-		message.setType(MessageType.MSG);
-		message.setUser(userName);
-		store(request.getRoomId(), message);
+		Message message = new Message(MessageType.MSG, userName, request.message().strip(), System.currentTimeMillis());
+		store(request.roomId(), message);
 
-		this.eventBus.handleEvent(SseEvent.of(request.getRoomId(), Collections.singleton(message)));
+		this.eventBus.handleEvent(SseEvent.of(request.roomId(), List.of(message)));
 	}
 
 	private List<Message> getMessages(String roomId) {
 		Cache<Message, Boolean> cache = this.roomMessages.get(roomId);
 		if (cache != null) {
-			return cache.asMap()
-				.keySet()
-				.stream()
-				.sorted(Comparator.comparing(Message::getSendDate))
-				.collect(Collectors.toList());
+			return cache.asMap().keySet().stream().sorted(Comparator.comparing(Message::sendDate)).toList();
 		}
-		return Collections.emptyList();
+		return List.of();
 	}
 
 	private void store(String roomId, Message message) {
@@ -200,6 +193,11 @@ public class ChatController {
 			.computeIfAbsent(roomId,
 					_ -> Caffeine.newBuilder().expireAfterWrite(6, TimeUnit.HOURS).maximumSize(100).build())
 			.put(message, true);
+	}
+
+	private boolean isValidRoomRequest(ClientRequest request) {
+		return request != null && request.clientId() != null && request.roomId() != null
+				&& this.users.containsKey(request.clientId()) && this.rooms.containsKey(request.roomId());
 	}
 
 	@Scheduled(fixedDelay = 21_600_000)
@@ -216,7 +214,9 @@ public class ChatController {
 		oldRoomIds.forEach(this.roomMessages::remove);
 		oldRoomIds.forEach(this.rooms::remove);
 
-		this.eventBus.handleEvent(SseEvent.of("roomsRemoved", oldRoomIds));
+		if (!oldRoomIds.isEmpty()) {
+			this.eventBus.handleEvent(SseEvent.of("roomsRemoved", oldRoomIds));
+		}
 	}
 
 }

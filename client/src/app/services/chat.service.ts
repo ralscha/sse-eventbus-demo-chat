@@ -9,15 +9,16 @@ export class ChatService {
 
   private eventSource: EventSource | null = null;
   private clientId: string | null = null;
-  private roomListener: ((event: MessageEvent<string>) => void) | null = null;
+  private readonly roomListeners = new Map<string, (event: MessageEvent<string>) => void>();
 
-  private jsonHeaders = new Headers({ 'Content-Type': 'application/json' });
+  private readonly jsonHeaders = new Headers({ 'Content-Type': 'application/json' });
 
   isLoggedIn(): boolean {
     return this.clientId !== null;
   }
 
   async signin(username: string, force = false): Promise<boolean> {
+    this.disconnect();
     this.clientId = null;
     this.rooms.set([]);
     this.username.set(null);
@@ -31,7 +32,10 @@ export class ChatService {
       method: 'POST',
       body: username,
     });
-    const cid = await response.text();
+    if (!response.ok) {
+      return false;
+    }
+    const cid = (await response.text()).trim();
 
     if (!cid) {
       return false;
@@ -42,7 +46,12 @@ export class ChatService {
     this.eventSource = new EventSource(`${environment.SERVER_URL}/register/${this.clientId}`);
     this.eventSource.addEventListener('roomAdded', (rsp) => {
       const newRoom = JSON.parse(rsp.data) as Room;
-      this.rooms.update((rooms) => [...rooms, newRoom]);
+      this.rooms.update((rooms) => {
+        if (rooms.some((room) => room.id === newRoom.id)) {
+          return rooms;
+        }
+        return [...rooms, newRoom].sort((left, right) => left.name.localeCompare(right.name));
+      });
     });
     this.eventSource.addEventListener('roomsRemoved', (rsp) => {
       const roomIds = JSON.parse(rsp.data) as string[];
@@ -53,25 +62,36 @@ export class ChatService {
       method: 'POST',
       body: this.clientId,
     });
+    if (!resp.ok) {
+      this.disconnect();
+      this.clientId = null;
+      this.username.set(null);
+      return false;
+    }
 
-    this.rooms.set((await resp.json()) as Room[]);
+    const initialRooms = (await resp.json()) as Room[];
+    this.rooms.update((rooms) => {
+      const roomsById = new Map(initialRooms.map((room) => [room.id, room]));
+      rooms.forEach((room) => roomsById.set(room.id, room));
+      return [...roomsById.values()].sort((left, right) => left.name.localeCompare(right.name));
+    });
 
     return true;
   }
 
   async signout(): Promise<void> {
-    await fetch(`${environment.SERVER_URL}/signout`, {
-      method: 'POST',
-      body: this.clientId,
-    });
+    const clientId = this.clientId;
+    this.disconnect();
 
     this.clientId = null;
     this.rooms.set([]);
     this.username.set(null);
 
-    if (this.eventSource) {
-      this.eventSource.close();
-      this.eventSource = null;
+    if (clientId !== null) {
+      await fetch(`${environment.SERVER_URL}/signout`, {
+        method: 'POST',
+        body: clientId,
+      });
     }
   }
 
@@ -83,7 +103,7 @@ export class ChatService {
     return fetch(`${environment.SERVER_URL}/addRoom`, {
       headers: this.jsonHeaders,
       method: 'POST',
-      body: roomName,
+      body: JSON.stringify(roomName),
     });
   }
 
@@ -100,8 +120,12 @@ export class ChatService {
   }
 
   joinRoom(roomId: string, roomListener: (event: MessageEvent<string>) => void): Promise<Response> {
-    this.roomListener = roomListener;
-    this.eventSource?.addEventListener(roomId, this.roomListener);
+    const previousListener = this.roomListeners.get(roomId);
+    if (previousListener) {
+      this.eventSource?.removeEventListener(roomId, previousListener);
+    }
+    this.roomListeners.set(roomId, roomListener);
+    this.eventSource?.addEventListener(roomId, roomListener);
 
     return fetch(`${environment.SERVER_URL}/join`, {
       method: 'POST',
@@ -114,9 +138,10 @@ export class ChatService {
   }
 
   leaveRoom(roomId: string): Promise<Response> {
-    if (this.roomListener) {
-      this.eventSource?.removeEventListener(roomId, this.roomListener);
-      this.roomListener = null;
+    const roomListener = this.roomListeners.get(roomId);
+    if (roomListener) {
+      this.eventSource?.removeEventListener(roomId, roomListener);
+      this.roomListeners.delete(roomId);
     }
 
     return fetch(`${environment.SERVER_URL}/leave`, {
@@ -127,5 +152,16 @@ export class ChatService {
         roomId,
       }),
     });
+  }
+
+  private disconnect(): void {
+    if (this.eventSource) {
+      for (const [roomId, roomListener] of this.roomListeners) {
+        this.eventSource.removeEventListener(roomId, roomListener);
+      }
+      this.eventSource.close();
+      this.eventSource = null;
+    }
+    this.roomListeners.clear();
   }
 }

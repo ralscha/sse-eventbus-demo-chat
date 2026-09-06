@@ -14,3 +14,41 @@ tasks:
     desc: Apply Spring Java Format
     cmds:
       - '{{.MVNW}} -B -ntp spring-javaformat:apply'
+
+  demo:
+    desc: Run the backend and Angular development server
+    deps:
+      - client
+      - server
+
+  client:
+    desc: Start the Angular development server
+    dir: client
+    cmds:
+      - task: client-install
+      - cmd: npm start
+
+  client-build:
+    desc: Build the frontend into src/main/resources/static
+    dir: client
+    cmds:
+      - task: client-install
+      - cmd: npm run build
+
+  client-install:
+    desc: Install frontend dependencies
+    dir: client
+    cmds:
+      - cmd: npm install
+
+  package:
+    desc: Build an executable jar containing the frontend
+    deps:
+      - client-build
+    cmds:
+      - '{{.MVNW}} -B -ntp clean package'
+
+  server:
+    desc: Start the backend on port 8080
+    cmds:
+      - '{{.MVNW}} spring-boot:run'

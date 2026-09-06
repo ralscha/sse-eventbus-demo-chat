@@ -1,5 +1,8 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
+client/node_modules/
+client/dist/
+src/main/resources/static/
 
 ### STS ###
 .apt_generated
