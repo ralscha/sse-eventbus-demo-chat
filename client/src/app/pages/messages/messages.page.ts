@@ -24,7 +24,7 @@ import {
   IonTitle,
   IonToolbar,
   NavController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { ChatService } from '../../services/chat.service';
 import { Message } from '../../models/message';
 import { ActivatedRoute } from '@angular/router';

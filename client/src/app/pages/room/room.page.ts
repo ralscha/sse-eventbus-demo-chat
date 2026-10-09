@@ -14,7 +14,7 @@ import {
   IonTitle,
   IonToolbar,
   NavController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { ChatService } from '../../services/chat.service';
 import { Room } from '../../models/room';
 import { addIcons } from 'ionicons';

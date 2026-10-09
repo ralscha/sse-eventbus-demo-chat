@@ -8,8 +8,8 @@ import {
 } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
-import { routes } from './app/app-routing.module';
+import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular';
+import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
   providers: [

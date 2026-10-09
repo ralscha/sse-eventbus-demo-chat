@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { register } from 'swiper/element/bundle';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet } from '@ionic/angular';
 
 register();
 

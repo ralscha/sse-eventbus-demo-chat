@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Service, inject } from '@angular/core';
 import { ChatService } from './chat.service';
-import { NavController } from '@ionic/angular/standalone';
+import { NavController } from '@ionic/angular';
 
 @Service()
 export class AuthGuard {

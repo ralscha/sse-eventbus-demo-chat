@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Provider, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IonicSlides } from '@ionic/angular/standalone';
+import { IonicSlides } from '@ionic/angular';
 
 export const EMOJI_PICKER_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
